@@ -38,7 +38,7 @@ const ImageModal = ({ item, onClose, onNext, onPrev }) => {
                     {/* Image Side (Dominant) */}
                     <div className="w-full md:w-2/3 h-1/2 md:h-full bg-gray-100 relative">
                         <img
-                            src={(item.downloads && item.downloads.desktop) ? item.downloads.desktop : item.downloadUrl}
+                            src={item.downloads.desktop}
                             alt={item.title}
                             className="w-full h-full object-cover"
                         />
@@ -59,41 +59,26 @@ const ImageModal = ({ item, onClose, onNext, onPrev }) => {
                             </p>
 
                             <div className="pt-8 flex flex-col gap-3">
-                                {item.downloads ? (
-                                    <>
-                                        <a
-                                            href={item.downloads.desktop}
-                                            download
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex justify-between items-center w-full px-6 py-4 border border-paper-black text-xs font-sans uppercase tracking-widest hover:bg-paper-black hover:text-white transition-colors duration-300 group"
-                                        >
-                                            <span>Desktop</span>
-                                            <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
-                                        </a>
-                                        <a
-                                            href={item.downloads.mobile}
-                                            download
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex justify-between items-center w-full px-6 py-4 border border-paper-black text-xs font-sans uppercase tracking-widest hover:bg-paper-black hover:text-white transition-colors duration-300 group"
-                                        >
-                                            <span>Mobile</span>
-                                            <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
-                                        </a>
-                                    </>
-                                ) : (
-                                    <a
-                                        href={item.downloadUrl}
-                                        download
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-3 px-6 py-3 border border-paper-black text-xs font-sans uppercase tracking-widest hover:bg-paper-black hover:text-white transition-colors duration-300"
-                                    >
-                                        <Download size={14} />
-                                        <span>Download</span>
-                                    </a>
-                                )}
+                                <a
+                                    href={item.downloads.desktop}
+                                    download
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex justify-between items-center w-full px-6 py-4 border border-paper-black text-xs font-sans uppercase tracking-widest hover:bg-paper-black hover:text-white transition-colors duration-300 group"
+                                >
+                                    <span>Desktop</span>
+                                    <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                                </a>
+                                <a
+                                    href={item.downloads.mobile}
+                                    download
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex justify-between items-center w-full px-6 py-4 border border-paper-black text-xs font-sans uppercase tracking-widest hover:bg-paper-black hover:text-white transition-colors duration-300 group"
+                                >
+                                    <span>Mobile</span>
+                                    <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                                </a>
                             </div>
 
                             <div className="pt-4 text-[10px] text-gray-400 font-sans">

@@ -60,7 +60,10 @@ export const wallpapers = [
         description: "Illumination without audience, warmth without demand",
         credit: "Daniel Lawani",
         src: "/images/Warmth.jpg",
-        downloadUrl: "/images/Warmth.jpg"
+        downloads: {
+            mobile: "/images/Warmth.jpg",
+            desktop: "/images/Warmth.jpg"
+        }
     },
     {
         id: 7,
@@ -112,7 +115,10 @@ export const wallpapers = [
         description: "A conditioned response to an implied reward.",
         credit: "Daniel Lawani",
         src: "/images/Reward.jpg",
-        downloadUrl: "/images/Reward.jpg"
+        downloads: {
+            mobile: "/images/Reward.jpg",
+            desktop: "/images/Reward.jpg"
+        }
     },
     {
         id: 12,
@@ -125,7 +131,17 @@ export const wallpapers = [
             desktop: "/images/Quiet Architecture.jpg"
         }
     },
-
+    {
+        id: 13,
+        title: "The Ascent",
+        description: "",
+        credit: "Daniel Lawani",
+        src: "/images/The Ascent_Mobile.png",
+        downloads: {
+            mobile: "/images/The Ascent_Mobile.png",
+            desktop: "/images/The Ascent.jpg"
+        }
+    },
     {
         id: 14,
         title: "Between",
@@ -143,6 +159,9 @@ export const wallpapers = [
         description: "A gesture suspended between intention and contact.",
         credit: "Daniel Lawani",
         src: "/images/The Reach.jpg",
-        downloadUrl: "/images/The Reach.jpg"
+        downloads: {
+            mobile: "/images/The Reach.jpg",
+            desktop: "/images/The Reach.jpg"
+        }
     }
 ];
