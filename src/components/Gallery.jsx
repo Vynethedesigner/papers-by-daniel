@@ -16,6 +16,16 @@ const Gallery = () => {
     // Register GSAP plugin
     gsap.registerPlugin(useGSAP);
 
+    const [showSwipeHint, setShowSwipeHint] = useState(true);
+
+    // Fade out swipe hint after 4 seconds
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowSwipeHint(false);
+        }, 4000);
+        return () => clearTimeout(timer);
+    }, []);
+
     // Responsive Check
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -228,8 +238,14 @@ const Gallery = () => {
             </div>
 
             {/* Footer */}
-            <div className="fixed bottom-4 left-0 w-full px-6 flex justify-between items-end pointer-events-none">
+            <div className="fixed bottom-4 left-0 w-full px-6 flex justify-between items-end pointer-events-none z-30">
                 <span className="font-sans text-[10px] text-gray-400">© 2026 Daniel Lawani</span>
+
+                {/* Mobile Swipe Hint - Fades out */}
+                <span className={`md:hidden font-sans text-[10px] text-gray-400 uppercase tracking-widest transition-opacity duration-1000 ${showSwipeHint ? 'opacity-100' : 'opacity-0'}`}>
+                    Swipe to explore
+                </span>
+
                 <span className="font-sans text-[10px] text-gray-400">Curated by Uche Divine</span>
             </div>
 
