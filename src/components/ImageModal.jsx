@@ -129,9 +129,9 @@ const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
                 {/* Close Button */}
                 <button
                     onClick={handleClose}
-                    className="absolute top-4 right-4 z-20 p-2 text-black hover:opacity-50 transition-opacity"
+                    className="absolute top-4 right-4 z-40 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg text-black hover:bg-white hover:scale-110 md:bg-transparent md:backdrop-blur-none md:shadow-none md:hover:bg-transparent md:hover:scale-100 md:hover:opacity-50 transition-all duration-300"
                 >
-                    <X size={24} strokeWidth={1} />
+                    <X size={20} strokeWidth={1.5} className="md:w-6 md:h-6 md:stroke-[1]" />
                 </button>
 
                 {/* Image Side (Dominant) */}
