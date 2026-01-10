@@ -9,7 +9,7 @@ const Footer = () => {
                 <div className="flex flex-col gap-2">
                     <h2 className="font-serif text-lg md:text-xl text-paper-black">Papers</h2>
                     <span className="font-sans text-[10px] md:text-xs text-gray-400">
-                        © 2024 Daniel Lawani
+                        © 2026 Daniel Lawani
                     </span>
                 </div>
 

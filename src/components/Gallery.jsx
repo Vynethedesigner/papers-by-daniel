@@ -1,69 +1,187 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 import { wallpapers } from '../data/wallpapers';
-import GalleryItem from './GalleryItem';
 import ImageModal from './ImageModal';
-import Footer from './Footer';
 
 const Gallery = () => {
+    const [activeIndex, setActiveIndex] = useState(0);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [direction, setDirection] = useState(0);
+    const trackRef = useRef(null);
+    const containerRef = useRef(null);
+
+    // Register GSAP plugin
+    gsap.registerPlugin(useGSAP);
+
+    const handleNext = () => {
+        setDirection(1);
+        setActiveIndex((prev) => (prev + 1) % wallpapers.length);
+    };
+
+    const handlePrev = () => {
+        setDirection(-1);
+        setActiveIndex((prev) => (prev - 1 + wallpapers.length) % wallpapers.length);
+    };
+
+    useGSAP(() => {
+        if (!trackRef.current) return;
+
+        const timeline = gsap.timeline({
+            defaults: { duration: 0.8, ease: "power2.inOut" }
+        });
+
+        // Use xPercent for better performance
+        // Calculation: -activeIndex * (100 / wallpapers.length)
+        // Since we want center offset (25vw) and frames are 50vw:
+        // We'll stick to x: 'vw' but ensure will-change is set.
+        // Actually, xPercent is relative to the element's own width.
+        // If track is N * 50vw. 
+        // Index 0: x = 25vw
+        // Index 1: x = 25vw - 50vw = -25vw
+
+        const targetX = 25 - (activeIndex * 50);
+
+        timeline.to(trackRef.current, {
+            x: `${targetX}vw`,
+        }, 0);
+
+        // Animate individual frames
+        const frames = gsap.utils.toArray('.gallery-frame');
+        frames.forEach((frame, i) => {
+            const isActive = i === activeIndex;
+            timeline.to(frame, {
+                scale: isActive ? 1 : 0.7,
+                opacity: isActive ? 1 : 0.3,
+                filter: isActive ? 'grayscale(0%)' : 'grayscale(100%)',
+            }, 0);
+        });
+    }, { dependencies: [activeIndex], scope: containerRef });
+
+    // GSAP Hover Logic for Titles
+    const onMouseEnterTitle = (e) => {
+        const overlay = e.currentTarget.querySelector('.title-overlay');
+        const title = e.currentTarget.querySelector('.title-text');
+        const darkOverlay = e.currentTarget.querySelector('.dark-overlay');
+
+        gsap.to(darkOverlay, { opacity: 1, duration: 0.4 });
+        gsap.to(overlay, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" });
+        gsap.to(title, { y: 0, duration: 0.4, ease: "power2.out" });
+    };
+
+    const onMouseLeaveTitle = (e) => {
+        const overlay = e.currentTarget.querySelector('.title-overlay');
+        const darkOverlay = e.currentTarget.querySelector('.dark-overlay');
+
+        gsap.to(darkOverlay, { opacity: 0, duration: 0.4 });
+        gsap.to(overlay, { opacity: 0, y: 10, duration: 0.4, ease: "power2.in" });
+    };
 
     return (
-        <>
-            <div className="min-h-screen pb-0">
-                {/* Header Count */}
-                <div className="fixed top-0 left-0 w-full p-6 md:p-8 z-10 pointer-events-none mix-blend-difference text-white">
-                    {/* Using mix-blend-difference so it shows on white or black, but mostly white bg so maybe standard black is better if bg is white. 
-                User asked for "Quiet... minimal". 
-                Let's stick to standard layout flow or fixed header.
-                "At the top or subtly placed: A small line of text showing total count"
-             */}
+        <div ref={containerRef} className="relative min-h-screen bg-paper-white flex flex-col items-center justify-center overflow-hidden">
+            {/* Header */}
+            <header className="fixed top-0 left-0 w-full flex justify-between items-center px-6 md:px-12 py-8 z-30 pointer-events-none">
+                <h1 className="text-sm md:text-base font-serif italic text-paper-black tracking-wide pointer-events-auto">
+                    Papers by Daniel Lawani
+                </h1>
+                <div className="flex items-baseline gap-2 font-sans text-xs md:text-sm tracking-widest text-gray-400 uppercase">
+                    <span className="text-paper-black font-medium">{activeIndex + 1}</span>
+                    <span className="opacity-30">/</span>
+                    <span>{wallpapers.length}</span>
                 </div>
+            </header>
 
-                <header className="w-full flex justify-between items-end px-6 md:px-12 pt-8 pb-16 opacity-0 animate-fade-in" style={{ animationFillMode: 'forwards', animationDelay: '0.5s' }}>
-                    <h1 className="text-sm md:text-base font-serif italic text-paper-black tracking-wide">
-                        Papers by Daniel Lawani
-                    </h1>
+            {/* Main Carousel Area */}
+            <div className="relative w-full h-[70vh] flex items-center justify-start">
+                <div
+                    ref={trackRef}
+                    className="flex h-full items-center will-change-transform"
+                    style={{ width: `${wallpapers.length * 50}vw` }}
+                >
+                    {wallpapers.map((item, index) => (
+                        <div
+                            key={item.id}
+                            className="gallery-frame relative h-full flex items-center justify-center flex-shrink-0 will-change-transform"
+                            style={{ width: '50vw' }}
+                            onMouseEnter={index === activeIndex ? onMouseEnterTitle : null}
+                            onMouseLeave={index === activeIndex ? onMouseLeaveTitle : null}
+                        >
+                            <div
+                                className="relative w-[85%] h-[85%] overflow-hidden cursor-pointer shadow-2xl border border-black/5 bg-gray-100"
+                                onClick={() => index === activeIndex && setSelectedImage(item)}
+                            >
+                                <img
+                                    src={item.downloads.desktop}
+                                    alt={item.title}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    loading="lazy"
+                                />
 
-                    <div className="flex items-baseline gap-2 font-sans text-xs md:text-sm tracking-widest text-gray-500 uppercase">
-                        <span className="text-paper-black font-medium">{wallpapers.length}</span>
-                        <span>papers</span>
-                    </div>
-                </header>
+                                {/* Hover Title Overlay - Optimized with GSAP */}
+                                {index === activeIndex && (
+                                    <>
+                                        <div className="dark-overlay absolute inset-0 bg-black/5 opacity-0 pointer-events-none z-10" />
 
-                <div className="container mx-auto px-4 md:px-0">
-                    <div className="flex flex-col items-center">
-                        {wallpapers.map((item, index) => (
-                            <GalleryItem
-                                key={item.id}
-                                item={item}
-                                onClick={setSelectedImage}
-                                isLast={index === wallpapers.length - 1}
-                            />
-                        ))}
-                    </div>
+                                        <div className="title-overlay absolute inset-x-0 bottom-0 py-8 flex flex-col justify-center items-center z-20 opacity-0 translate-y-[10px]">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
+                                            <h2 className="title-text relative text-[10px] font-sans tracking-[0.3em] uppercase text-white drop-shadow-md">
+                                                {item.title}
+                                            </h2>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    ))}
                 </div>
-
-                <Footer />
             </div>
 
-            {/* Modal will go here */}
+            {/* Navigation Buttons */}
+            <div className="fixed bottom-12 flex gap-12 z-40">
+                <button
+                    onClick={handlePrev}
+                    className="p-4 hover:opacity-50 transition-opacity group"
+                    aria-label="Previous paper"
+                >
+                    <ChevronLeft size={24} strokeWidth={1} className="text-paper-black" />
+                </button>
+                <button
+                    onClick={handleNext}
+                    className="p-4 hover:opacity-50 transition-opacity group"
+                    aria-label="Next paper"
+                >
+                    <ChevronRight size={24} strokeWidth={1} className="text-paper-black" />
+                </button>
+            </div>
+
+            {/* Footer */}
+            <div className="fixed bottom-4 left-0 w-full px-6 flex justify-between items-end pointer-events-none">
+                <span className="font-sans text-[10px] text-gray-400">© 2026 Daniel Lawani</span>
+                <span className="font-sans text-[10px] text-gray-400">Curated by Uche Divine</span>
+            </div>
+
+            {/* Modal */}
             {selectedImage && (
                 <ImageModal
                     item={selectedImage}
+                    direction={direction}
                     onClose={() => setSelectedImage(null)}
                     onNext={() => {
-                        const currentIndex = wallpapers.findIndex(w => w.id === selectedImage.id);
-                        const nextIndex = (currentIndex + 1) % wallpapers.length;
+                        setDirection(1);
+                        const nextIndex = (activeIndex + 1) % wallpapers.length;
+                        setActiveIndex(nextIndex);
                         setSelectedImage(wallpapers[nextIndex]);
                     }}
                     onPrev={() => {
-                        const currentIndex = wallpapers.findIndex(w => w.id === selectedImage.id);
-                        const prevIndex = (currentIndex - 1 + wallpapers.length) % wallpapers.length;
+                        setDirection(-1);
+                        const prevIndex = (activeIndex - 1 + wallpapers.length) % wallpapers.length;
+                        setActiveIndex(prevIndex);
                         setSelectedImage(wallpapers[prevIndex]);
                     }}
                 />
             )}
-        </>
+        </div>
     );
 };
 
