@@ -9,18 +9,28 @@ const Gallery = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [selectedImage, setSelectedImage] = useState(null);
     const [direction, setDirection] = useState(0);
+    const [isMobile, setIsMobile] = useState(false);
     const trackRef = useRef(null);
     const containerRef = useRef(null);
 
     // Register GSAP plugin
     gsap.registerPlugin(useGSAP);
 
+    // Responsive Check
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    const frameWidth = isMobile ? 85 : 50; // vw
+
     // Wrap navigation handlers in useCallback to use in useEffect
     const handleNext = useCallback(() => {
         setDirection(1);
         setActiveIndex((prev) => {
             const nextIndex = (prev + 1) % wallpapers.length;
-            // If modal is open, also update the selected image
             if (selectedImage) {
                 setSelectedImage(wallpapers[nextIndex]);
             }
@@ -32,7 +42,6 @@ const Gallery = () => {
         setDirection(-1);
         setActiveIndex((prev) => {
             const prevIndex = (prev - 1 + wallpapers.length) % wallpapers.length;
-            // If modal is open, also update the selected image
             if (selectedImage) {
                 setSelectedImage(wallpapers[prevIndex]);
             }
@@ -63,16 +72,11 @@ const Gallery = () => {
             defaults: { duration: 0.8, ease: "power2.inOut" }
         });
 
-        // Use xPercent for better performance
-        // Calculation: -activeIndex * (100 / wallpapers.length)
-        // Since we want center offset (25vw) and frames are 50vw:
-        // We'll stick to x: 'vw' but ensure will-change is set.
-        // Actually, xPercent is relative to the element's own width.
-        // If track is N * 50vw. 
-        // Index 0: x = 25vw
-        // Index 1: x = 25vw - 50vw = -25vw
-
-        const targetX = 25 - (activeIndex * 50);
+        // Calculate center offset based on dynamic frame width
+        // Formula: (Screen Width (100) - Frame Width) / 2 = Left Margin needed to center
+        // Target X = Center Offset - (Active Index * Frame Width)
+        const centerOffset = (100 - frameWidth) / 2;
+        const targetX = centerOffset - (activeIndex * frameWidth);
 
         timeline.to(trackRef.current, {
             x: `${targetX}vw`,
@@ -88,7 +92,7 @@ const Gallery = () => {
                 filter: isActive ? 'grayscale(0%)' : 'grayscale(100%)',
             }, 0);
         });
-    }, { dependencies: [activeIndex], scope: containerRef });
+    }, { dependencies: [activeIndex, frameWidth], scope: containerRef });
 
     // GSAP Hover Logic for Titles
     const onMouseEnterTitle = (e) => {
@@ -128,13 +132,13 @@ const Gallery = () => {
                 <div
                     ref={trackRef}
                     className="flex h-full items-center will-change-transform"
-                    style={{ width: `${wallpapers.length * 50}vw` }}
+                    style={{ width: `${wallpapers.length * frameWidth}vw` }}
                 >
                     {wallpapers.map((item, index) => (
                         <div
                             key={item.id}
                             className="gallery-frame relative h-full flex items-center justify-center flex-shrink-0 will-change-transform"
-                            style={{ width: '50vw' }}
+                            style={{ width: `${frameWidth}vw` }}
                             onMouseEnter={index === activeIndex ? onMouseEnterTitle : null}
                             onMouseLeave={index === activeIndex ? onMouseLeaveTitle : null}
                         >
