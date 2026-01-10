@@ -49,6 +49,34 @@ const Gallery = () => {
         });
     }, [selectedImage]);
 
+    // Swipe Handling
+    const touchStart = useRef(null);
+    const touchEnd = useRef(null);
+    const minSwipeDistance = 50; // px
+
+    const onTouchStart = (e) => {
+        touchEnd.current = null;
+        touchStart.current = e.targetTouches[0].clientX;
+    };
+
+    const onTouchMove = (e) => {
+        touchEnd.current = e.targetTouches[0].clientX;
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart.current || !touchEnd.current) return;
+
+        const distance = touchStart.current - touchEnd.current;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe) {
+            handleNext();
+        } else if (isRightSwipe) {
+            handlePrev();
+        }
+    };
+
     // Keyboard Navigation
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -72,9 +100,6 @@ const Gallery = () => {
             defaults: { duration: 0.8, ease: "power2.inOut" }
         });
 
-        // Calculate center offset based on dynamic frame width
-        // Formula: (Screen Width (100) - Frame Width) / 2 = Left Margin needed to center
-        // Target X = Center Offset - (Active Index * Frame Width)
         const centerOffset = (100 - frameWidth) / 2;
         const targetX = centerOffset - (activeIndex * frameWidth);
 
@@ -82,7 +107,6 @@ const Gallery = () => {
             x: `${targetX}vw`,
         }, 0);
 
-        // Animate individual frames
         const frames = gsap.utils.toArray('.gallery-frame');
         frames.forEach((frame, i) => {
             const isActive = i === activeIndex;
@@ -114,7 +138,13 @@ const Gallery = () => {
     };
 
     return (
-        <div ref={containerRef} className="relative min-h-screen bg-paper-white flex flex-col items-center justify-center overflow-hidden">
+        <div
+            ref={containerRef}
+            className="relative min-h-screen bg-paper-white flex flex-col items-center justify-center overflow-hidden"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+        >
             {/* Header */}
             <header className="fixed top-0 left-0 w-full flex justify-between items-center px-6 md:px-12 py-8 z-30 pointer-events-none">
                 <h1 className="text-sm md:text-base font-serif italic text-paper-black tracking-wide pointer-events-auto">
