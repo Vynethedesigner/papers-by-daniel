@@ -2,7 +2,7 @@ export const wallpapers = [
     {
         id: 1,
         title: "Apachey",
-        description: "Rooted beneath an open sky, APACHAY embodies quiet strength. The scene unfolds without urgency, allowing stillness itself to become the gesture.",
+        description: "A champion at rest, carrying the memory of movement.",
         credit: "Daniel Lawani",
         src: "/images/Apachey_Mobile.png",
         downloads: {
@@ -122,8 +122,8 @@ export const wallpapers = [
     },
     {
         id: 12,
-        title: "Quiet Architecture",
-        description: "Built rather than born, this figure treats the body as a structure — a system of repeating parts that frames absence as its central presence.",
+        title: "Worth",
+        description: "A figure shaped from coins, questioning how value becomes identity.",
         credit: "Daniel Lawani",
         src: "/images/Quiet Architecture_Mobile.png",
         downloads: {
