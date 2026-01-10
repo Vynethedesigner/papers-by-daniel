@@ -1,41 +1,58 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 
 const OpeningScreen = ({ onComplete }) => {
+    const containerRef = useRef(null);
+    const titleRef = useRef(null);
+    const subtitleRef = useRef(null);
+
     useEffect(() => {
-        // Transition out after 3 seconds
-        const timer = setTimeout(() => {
-            onComplete();
-        }, 2500);
-        return () => clearTimeout(timer);
+        const ctx = gsap.context(() => {
+            // Animate title in
+            gsap.fromTo(titleRef.current,
+                { opacity: 0, y: 10 },
+                { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: "power2.out" }
+            );
+
+            // Animate subtitle in
+            gsap.fromTo(subtitleRef.current,
+                { opacity: 0 },
+                { opacity: 1, duration: 0.8, delay: 0.6, ease: "power2.out" }
+            );
+
+            // After 2.5 seconds, fade out the entire container then call onComplete
+            gsap.to(containerRef.current, {
+                opacity: 0,
+                duration: 0.8,
+                delay: 2.5,
+                ease: "power2.inOut",
+                onComplete: onComplete
+            });
+        }, containerRef);
+
+        return () => ctx.revert();
     }, [onComplete]);
 
     return (
-        <motion.div
+        <div
+            ref={containerRef}
             className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-paper-white"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
         >
             <div className="text-center space-y-4">
-                <motion.h1
-                    className="text-2xl md:text-3xl font-serif text-paper-black tracking-wide"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                <h1
+                    ref={titleRef}
+                    className="text-2xl md:text-3xl font-serif text-paper-black tracking-wide opacity-0"
                 >
                     Papers by Daniel Lawani
-                </motion.h1>
-                <motion.p
-                    className="text-xs md:text-sm font-sans text-gray-500 uppercase tracking-widest"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.8, delay: 0.6 }}
+                </h1>
+                <p
+                    ref={subtitleRef}
+                    className="text-xs md:text-sm font-sans text-gray-500 uppercase tracking-widest opacity-0"
                 >
                     Curated and Written by Uche Divine
-                </motion.p>
+                </p>
             </div>
-        </motion.div>
+        </div>
     );
 };
 

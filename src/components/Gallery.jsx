@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -15,15 +15,46 @@ const Gallery = () => {
     // Register GSAP plugin
     gsap.registerPlugin(useGSAP);
 
-    const handleNext = () => {
+    // Wrap navigation handlers in useCallback to use in useEffect
+    const handleNext = useCallback(() => {
         setDirection(1);
-        setActiveIndex((prev) => (prev + 1) % wallpapers.length);
-    };
+        setActiveIndex((prev) => {
+            const nextIndex = (prev + 1) % wallpapers.length;
+            // If modal is open, also update the selected image
+            if (selectedImage) {
+                setSelectedImage(wallpapers[nextIndex]);
+            }
+            return nextIndex;
+        });
+    }, [selectedImage]);
 
-    const handlePrev = () => {
+    const handlePrev = useCallback(() => {
         setDirection(-1);
-        setActiveIndex((prev) => (prev - 1 + wallpapers.length) % wallpapers.length);
-    };
+        setActiveIndex((prev) => {
+            const prevIndex = (prev - 1 + wallpapers.length) % wallpapers.length;
+            // If modal is open, also update the selected image
+            if (selectedImage) {
+                setSelectedImage(wallpapers[prevIndex]);
+            }
+            return prevIndex;
+        });
+    }, [selectedImage]);
+
+    // Keyboard Navigation
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'ArrowRight') {
+                handleNext();
+            } else if (e.key === 'ArrowLeft') {
+                handlePrev();
+            } else if (e.key === 'Escape') {
+                setSelectedImage(null);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleNext, handlePrev]);
 
     useGSAP(() => {
         if (!trackRef.current) return;
@@ -167,18 +198,8 @@ const Gallery = () => {
                     item={selectedImage}
                     direction={direction}
                     onClose={() => setSelectedImage(null)}
-                    onNext={() => {
-                        setDirection(1);
-                        const nextIndex = (activeIndex + 1) % wallpapers.length;
-                        setActiveIndex(nextIndex);
-                        setSelectedImage(wallpapers[nextIndex]);
-                    }}
-                    onPrev={() => {
-                        setDirection(-1);
-                        const prevIndex = (activeIndex - 1 + wallpapers.length) % wallpapers.length;
-                        setActiveIndex(prevIndex);
-                        setSelectedImage(wallpapers[prevIndex]);
-                    }}
+                    onNext={handleNext}
+                    onPrev={handlePrev}
                 />
             )}
         </div>
