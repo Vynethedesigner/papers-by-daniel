@@ -26,28 +26,33 @@ const Gallery = () => {
 
     const frameWidth = isMobile ? 85 : 50; // vw
 
-    // Wrap navigation handlers in useCallback to use in useEffect
+    // Linear Navigation Logic
+    const isFirst = activeIndex === 0;
+    const isLast = activeIndex === wallpapers.length - 1;
+
     const handleNext = useCallback(() => {
+        if (activeIndex >= wallpapers.length - 1) return;
         setDirection(1);
         setActiveIndex((prev) => {
-            const nextIndex = (prev + 1) % wallpapers.length;
+            const nextIndex = prev + 1;
             if (selectedImage) {
                 setSelectedImage(wallpapers[nextIndex]);
             }
             return nextIndex;
         });
-    }, [selectedImage]);
+    }, [activeIndex, selectedImage]);
 
     const handlePrev = useCallback(() => {
+        if (activeIndex <= 0) return;
         setDirection(-1);
         setActiveIndex((prev) => {
-            const prevIndex = (prev - 1 + wallpapers.length) % wallpapers.length;
+            const prevIndex = prev - 1;
             if (selectedImage) {
                 setSelectedImage(wallpapers[prevIndex]);
             }
             return prevIndex;
         });
-    }, [selectedImage]);
+    }, [activeIndex, selectedImage]);
 
     // Swipe Handling
     const touchStart = useRef(null);
@@ -70,9 +75,9 @@ const Gallery = () => {
         const isLeftSwipe = distance > minSwipeDistance;
         const isRightSwipe = distance < -minSwipeDistance;
 
-        if (isLeftSwipe) {
+        if (isLeftSwipe && !isLast) {
             handleNext();
-        } else if (isRightSwipe) {
+        } else if (isRightSwipe && !isFirst) {
             handlePrev();
         }
     };
@@ -80,9 +85,9 @@ const Gallery = () => {
     // Keyboard Navigation
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === 'ArrowRight') {
+            if (e.key === 'ArrowRight' && !isLast) {
                 handleNext();
-            } else if (e.key === 'ArrowLeft') {
+            } else if (e.key === 'ArrowLeft' && !isFirst) {
                 handlePrev();
             } else if (e.key === 'Escape') {
                 setSelectedImage(null);
@@ -91,7 +96,7 @@ const Gallery = () => {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [handleNext, handlePrev]);
+    }, [handleNext, handlePrev, isFirst, isLast]);
 
     useGSAP(() => {
         if (!trackRef.current) return;
@@ -206,14 +211,16 @@ const Gallery = () => {
             <div className="fixed bottom-12 flex gap-12 z-40">
                 <button
                     onClick={handlePrev}
-                    className="p-4 hover:opacity-50 transition-opacity group"
+                    disabled={isFirst}
+                    className={`p-4 transition-all duration-300 group ${isFirst ? 'opacity-20 cursor-not-allowed' : 'hover:opacity-50'}`}
                     aria-label="Previous paper"
                 >
                     <ChevronLeft size={24} strokeWidth={1} className="text-paper-black" />
                 </button>
                 <button
                     onClick={handleNext}
-                    className="p-4 hover:opacity-50 transition-opacity group"
+                    disabled={isLast}
+                    className={`p-4 transition-all duration-300 group ${isLast ? 'opacity-20 cursor-not-allowed' : 'hover:opacity-50'}`}
                     aria-label="Next paper"
                 >
                     <ChevronRight size={24} strokeWidth={1} className="text-paper-black" />
