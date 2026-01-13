@@ -19,27 +19,30 @@ const Gallery = () => {
     // Register GSAP plugin
     gsap.registerPlugin(useGSAP);
 
-    const [showSwipeHint, setShowSwipeHint] = useState(false); // Changed initial state to false
+    const [hintStep, setHintStep] = useState(0); // 0: Idle, 1: Sound Hint, 2: Swipe Hint, 3: Done
 
-    // Swipe Hint Logic
+    // Hint Sequence Logic
     useEffect(() => {
         const hasSeenHint = localStorage.getItem('hasSeenSwipeHint');
         const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
         if (!hasSeenHint && isTouch && !selectedImage && !showOpening) {
-            const timer = setTimeout(() => {
-                setShowSwipeHint(true);
-            }, 1500);
+            // Start sequence
+            const startTimer = setTimeout(() => setHintStep(1), 1500);
 
-            // Hide hint after 10 seconds (extended from 3s)
-            const hideTimer = setTimeout(() => {
-                setShowSwipeHint(false);
+            // Switch to Swipe Hint after 4s (Total 5.5s)
+            const swipeTimer = setTimeout(() => setHintStep(2), 5500);
+
+            // End sequence after another 5s (Total 10.5s)
+            const endTimer = setTimeout(() => {
+                setHintStep(3);
                 localStorage.setItem('hasSeenSwipeHint', 'true');
-            }, 10000);
+            }, 10500);
 
             return () => {
-                clearTimeout(timer);
-                clearTimeout(hideTimer);
+                clearTimeout(startTimer);
+                clearTimeout(swipeTimer);
+                clearTimeout(endTimer);
             };
         }
     }, [selectedImage, showOpening]);
@@ -270,9 +273,9 @@ const Gallery = () => {
             <div className="fixed bottom-4 left-0 w-full px-6 flex justify-between items-end pointer-events-none z-30">
                 <span className="font-sans text-[10px] text-gray-400">© 2026 Daniel Lawani</span>
 
-                {/* Mobile Swipe Hint - Fades out */}
-                <span className={`md:hidden font-sans text-[10px] text-gray-400 uppercase tracking-widest transition-opacity duration-1000 ${showSwipeHint ? 'opacity-100' : 'opacity-0'}`}>
-                    Swipe to explore
+                {/* Mobile Hints Sequence */}
+                <span className={`md:hidden font-sans text-[10px] text-gray-400 uppercase tracking-widest transition-opacity duration-1000 ${hintStep > 0 && hintStep < 3 ? 'opacity-100' : 'opacity-0'}`}>
+                    {hintStep === 1 ? "Turn on sound 🎧" : "Swipe to explore"}
                 </span>
 
                 <span className="font-sans text-[10px] text-gray-400">Curated by Uche Divine</span>
