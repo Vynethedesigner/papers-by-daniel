@@ -232,11 +232,11 @@ const Gallery = () => {
                                 {/* Hover Title Overlay - Optimized with GSAP */}
                                 {index === activeIndex && (
                                     <>
-                                        <div className="dark-overlay absolute inset-0 bg-black/5 opacity-0 pointer-events-none z-10" />
+                                        <div className="dark-overlay absolute inset-0 bg-black/5 opacity-100 md:opacity-0 pointer-events-none z-10" />
 
-                                        <div className="title-overlay absolute inset-x-0 bottom-0 py-8 flex flex-col justify-center items-center z-20 opacity-0 translate-y-[10px]">
+                                        <div className="title-overlay absolute inset-x-0 bottom-0 py-8 flex flex-col justify-center items-center z-20 opacity-100 translate-y-0 md:opacity-0 md:translate-y-[10px]">
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-                                            <h2 className="title-text relative text-[10px] font-sans tracking-[0.3em] uppercase text-white drop-shadow-md">
+                                            <h2 className="title-text relative text-[10px] font-sans tracking-[0.3em] uppercase text-white drop-shadow-md transform transition-transform duration-300 md:translate-y-0">
                                                 {item.title}
                                             </h2>
                                         </div>
