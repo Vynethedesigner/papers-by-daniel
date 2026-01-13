@@ -163,5 +163,60 @@ export const wallpapers = [
             mobile: "/images/The Reach.jpg",
             desktop: "/images/The Reach.jpg"
         }
+    },
+    {
+        id: 16,
+        title: "After Hours",
+        description: "Night holds the city in light.",
+        credit: "Daniel Lawani",
+        src: "/images/After Hours.jpg",
+        downloads: {
+            mobile: "/images/After Hours.jpg",
+            desktop: "/images/After Hours.jpg"
+        }
+    },
+    {
+        id: 17,
+        title: "Bark",
+        description: "Light moves across the bark, catching every scar and ridge.",
+        credit: "Daniel Lawani",
+        src: "/images/Bark.jpg",
+        downloads: {
+            mobile: "/images/Bark.jpg",
+            desktop: "/images/Bark.jpg"
+        }
+    },
+    {
+        id: 18,
+        title: "Late Afternoon",
+        description: "Light rests briefly on water before moving on.",
+        credit: "Daniel Lawani",
+        src: "/images/Late Afternoon.jpg",
+        downloads: {
+            mobile: "/images/Late Afternoon.jpg",
+            desktop: "/images/Late Afternoon.jpg"
+        }
+    },
+    {
+        id: 19,
+        title: "Resonance",
+        description: "Sound held in wood and string before it is released.",
+        credit: "Daniel Lawani",
+        src: "/images/Resonance.jpg",
+        downloads: {
+            mobile: "/images/Resonance.jpg",
+            desktop: "/images/Resonance.jpg"
+        }
+    },
+    {
+        id: 20,
+        title: "Winter",
+        description: "A narrow path through trees in winter.",
+        credit: "Daniel Lawani",
+        src: "/images/Winter.jpg",
+        downloads: {
+            mobile: "/images/Winter.jpg",
+            desktop: "/images/Winter.jpg"
+        }
     }
 ];
