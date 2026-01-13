@@ -22,6 +22,18 @@ export const wallpapers = [
         }
     },
     {
+        id: 19,
+        title: "Resonance",
+        description: "Sound held in wood and string before it is released.",
+        credit: "Daniel Lawani",
+        src: "/images/Resonance.jpg",
+        audio: "/sounds/Resonance.mp4",
+        downloads: {
+            mobile: "/images/Resonance.jpg",
+            desktop: "/images/Resonance.jpg"
+        }
+    },
+    {
         id: 3,
         title: "Held",
         description: "",
@@ -30,6 +42,18 @@ export const wallpapers = [
         downloads: {
             mobile: "/images/Held_Mobile.png",
             desktop: "/images/Held.jpg"
+        }
+    },
+    {
+        id: 5,
+        title: "Transit",
+        description: "A place defined by arrival and departure, never by staying.",
+        credit: "Daniel Lawani",
+        src: "/images/Transit_Mobile.png",
+        audio: "/sounds/transit.webm",
+        downloads: {
+            mobile: "/images/Transit_Mobile.png",
+            desktop: "/images/Transit.jpg"
         }
     },
     {
@@ -44,17 +68,6 @@ export const wallpapers = [
         }
     },
     {
-        id: 5,
-        title: "Transit",
-        description: "A place defined by arrival and departure, never by staying.",
-        credit: "Daniel Lawani",
-        src: "/images/Transit_Mobile.png",
-        downloads: {
-            mobile: "/images/Transit_Mobile.png",
-            desktop: "/images/Transit.jpg"
-        }
-    },
-    {
         id: 6,
         title: "Warmth",
         description: "Illumination without audience, warmth without demand",
@@ -63,6 +76,18 @@ export const wallpapers = [
         downloads: {
             mobile: "/images/Warmth.jpg",
             desktop: "/images/Warmth.jpg"
+        }
+    },
+    {
+        id: 20,
+        title: "Winter",
+        description: "A narrow path through trees in winter.",
+        credit: "Daniel Lawani",
+        src: "/images/Winter.jpg",
+        audio: "/sounds/winter.webm",
+        downloads: {
+            mobile: "/images/Winter.jpg",
+            desktop: "/images/Winter.jpg"
         }
     },
     {
@@ -85,6 +110,18 @@ export const wallpapers = [
         downloads: {
             mobile: "/images/Balance_Mobile.png",
             desktop: "/images/Balance.jpg"
+        }
+    },
+    {
+        id: 18,
+        title: "Late Afternoon",
+        description: "Light rests briefly on water before moving on.",
+        credit: "Daniel Lawani",
+        src: "/images/Late Afternoon.jpg",
+        audio: "/sounds/late_afternoon.webm",
+        downloads: {
+            mobile: "/images/Late Afternoon.jpg",
+            desktop: "/images/Late Afternoon.jpg"
         }
     },
     {
@@ -118,6 +155,18 @@ export const wallpapers = [
         downloads: {
             mobile: "/images/Reward.jpg",
             desktop: "/images/Reward.jpg"
+        }
+    },
+    {
+        id: 16,
+        title: "After Hours",
+        description: "Night holds the city in light.",
+        credit: "Daniel Lawani",
+        src: "/images/After Hours.jpg",
+        audio: "/sounds/after_hours.webm",
+        downloads: {
+            mobile: "/images/After Hours.jpg",
+            desktop: "/images/After Hours.jpg"
         }
     },
     {
@@ -165,17 +214,6 @@ export const wallpapers = [
         }
     },
     {
-        id: 16,
-        title: "After Hours",
-        description: "Night holds the city in light.",
-        credit: "Daniel Lawani",
-        src: "/images/After Hours.jpg",
-        downloads: {
-            mobile: "/images/After Hours.jpg",
-            desktop: "/images/After Hours.jpg"
-        }
-    },
-    {
         id: 17,
         title: "Bark",
         description: "Light moves across the bark, catching every scar and ridge.",
@@ -184,39 +222,6 @@ export const wallpapers = [
         downloads: {
             mobile: "/images/Bark.jpg",
             desktop: "/images/Bark.jpg"
-        }
-    },
-    {
-        id: 18,
-        title: "Late Afternoon",
-        description: "Light rests briefly on water before moving on.",
-        credit: "Daniel Lawani",
-        src: "/images/Late Afternoon.jpg",
-        downloads: {
-            mobile: "/images/Late Afternoon.jpg",
-            desktop: "/images/Late Afternoon.jpg"
-        }
-    },
-    {
-        id: 19,
-        title: "Resonance",
-        description: "Sound held in wood and string before it is released.",
-        credit: "Daniel Lawani",
-        src: "/images/Resonance.jpg",
-        downloads: {
-            mobile: "/images/Resonance.jpg",
-            desktop: "/images/Resonance.jpg"
-        }
-    },
-    {
-        id: 20,
-        title: "Winter",
-        description: "A narrow path through trees in winter.",
-        credit: "Daniel Lawani",
-        src: "/images/Winter.jpg",
-        downloads: {
-            mobile: "/images/Winter.jpg",
-            desktop: "/images/Winter.jpg"
         }
     }
 ];

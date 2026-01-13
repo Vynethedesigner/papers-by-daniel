@@ -4,6 +4,8 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { wallpapers } from '../data/wallpapers';
 import ImageModal from './ImageModal';
+import SoundToggle from './SoundToggle';
+import soundManager from '../utils/soundManager';
 
 const Gallery = () => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -43,6 +45,7 @@ const Gallery = () => {
     const handleNext = useCallback(() => {
         if (activeIndex >= wallpapers.length - 1) return;
         setDirection(1);
+        soundManager.playNavigateSound();
         setActiveIndex((prev) => {
             const nextIndex = prev + 1;
             if (selectedImage) {
@@ -55,6 +58,7 @@ const Gallery = () => {
     const handlePrev = useCallback(() => {
         if (activeIndex <= 0) return;
         setDirection(-1);
+        soundManager.playNavigateSound();
         setActiveIndex((prev) => {
             const prevIndex = prev - 1;
             if (selectedImage) {
@@ -165,10 +169,13 @@ const Gallery = () => {
                 <h1 className="text-sm md:text-base font-serif italic text-paper-black tracking-wide pointer-events-auto">
                     Papers by Daniel Lawani
                 </h1>
-                <div className="flex items-baseline gap-2 font-sans text-xs md:text-sm tracking-widest text-gray-400 uppercase">
-                    <span className="text-paper-black font-medium">{activeIndex + 1}</span>
-                    <span className="opacity-30">/</span>
-                    <span>{wallpapers.length}</span>
+                <div className="flex items-center gap-4">
+                    <SoundToggle />
+                    <div className="flex items-baseline gap-2 font-sans text-xs md:text-sm tracking-widest text-gray-400 uppercase">
+                        <span className="text-paper-black font-medium">{activeIndex + 1}</span>
+                        <span className="opacity-30">/</span>
+                        <span>{wallpapers.length}</span>
+                    </div>
                 </div>
             </header>
 

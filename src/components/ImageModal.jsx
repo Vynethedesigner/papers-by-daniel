@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Download, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, Download, ChevronLeft, ChevronRight, Volume2, VolumeX } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { wallpapers } from '../data/wallpapers';
+import soundManager from '../utils/soundManager';
 
 const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
     const containerRef = useRef(null);
@@ -11,6 +12,7 @@ const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
     const [displayItem, setDisplayItem] = useState(item);
     const [outgoingItem, setOutgoingItem] = useState(null);
     const [isClosing, setIsClosing] = useState(false);
+    const [isContextSoundPlaying, setIsContextSoundPlaying] = useState(false);
 
     // Sync item prop to state for transition logic
     useEffect(() => {
@@ -19,6 +21,30 @@ const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
             setDisplayItem(item);
         }
     }, [item, displayItem]);
+
+    // Contextual Sound Logic - Reset on item change
+    useEffect(() => {
+        setIsContextSoundPlaying(false);
+        soundManager.stopImageSound();
+
+        return () => {
+            soundManager.stopImageSound();
+        };
+    }, [item]);
+
+    // Handle Toggle Context Sound
+    const toggleContextSound = (e) => {
+        e.stopPropagation();
+        if (isContextSoundPlaying) {
+            soundManager.stopImageSound();
+            setIsContextSoundPlaying(false);
+        } else {
+            if (activeItem?.audio) {
+                soundManager.playImageSound(activeItem.audio);
+                setIsContextSoundPlaying(true);
+            }
+        }
+    };
 
     // Handle Closing Animation
     const handleClose = () => {
@@ -202,14 +228,34 @@ const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
                         </div>
                     </div>
 
-                    {/* Fixed Navigation Arrows */}
-                    <div className="flex gap-4 pt-8 justify-end border-t border-gray-50 bg-white">
-                        <button onClick={(e) => { e.stopPropagation(); onPrev(); }} className="p-3 hover:bg-gray-100 rounded-full transition-colors group">
-                            <ChevronLeft size={20} className="stroke-gray-400 group-hover:stroke-black transition-colors" />
-                        </button>
-                        <button onClick={(e) => { e.stopPropagation(); onNext(); }} className="p-3 hover:bg-gray-100 rounded-full transition-colors group">
-                            <ChevronRight size={20} className="stroke-gray-400 group-hover:stroke-black transition-colors" />
-                        </button>
+                    {/* Fixed Navigation Arrows & Sound Toggle */}
+                    <div className="flex justify-between items-center pt-8 border-t border-gray-50 bg-white">
+                        {/* Context Sound Toggle (Left aligned) */}
+                        <div className="flex-1">
+                            {activeItem.audio && (
+                                <button
+                                    onClick={toggleContextSound}
+                                    className="p-3 hover:bg-gray-100 rounded-full transition-colors group flex items-center gap-2"
+                                    title={isContextSoundPlaying ? "Stop ambient sound" : "Play ambient sound"}
+                                >
+                                    {isContextSoundPlaying ? (
+                                        <Volume2 size={20} className="stroke-paper-black" />
+                                    ) : (
+                                        <VolumeX size={20} className="stroke-gray-400 group-hover:stroke-black transition-colors" />
+                                    )}
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Navigation Arrows (Right aligned) */}
+                        <div className="flex gap-4">
+                            <button onClick={(e) => { e.stopPropagation(); onPrev(); }} className="p-3 hover:bg-gray-100 rounded-full transition-colors group">
+                                <ChevronLeft size={20} className="stroke-gray-400 group-hover:stroke-black transition-colors" />
+                            </button>
+                            <button onClick={(e) => { e.stopPropagation(); onNext(); }} className="p-3 hover:bg-gray-100 rounded-full transition-colors group">
+                                <ChevronRight size={20} className="stroke-gray-400 group-hover:stroke-black transition-colors" />
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
