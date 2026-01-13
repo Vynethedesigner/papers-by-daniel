@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { wallpapers } from '../data/wallpapers';
 import soundManager from '../utils/soundManager';
+import { trackDownload } from '../utils/analytics';
 
 const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
     const containerRef = useRef(null);
@@ -206,6 +207,7 @@ const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
                                 download
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                onClick={() => trackDownload(activeItem.id, activeItem.title)}
                                 className="inline-flex justify-between items-center w-full px-6 py-4 border border-paper-black text-xs font-sans uppercase tracking-widest hover:bg-paper-black hover:text-white transition-colors duration-300 group"
                             >
                                 <span>Desktop</span>
@@ -216,6 +218,7 @@ const ImageModal = ({ item, onClose, onNext, onPrev, direction }) => {
                                 download
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                onClick={() => trackDownload(activeItem.id, activeItem.title)}
                                 className="inline-flex justify-between items-center w-full px-6 py-4 border border-paper-black text-xs font-sans uppercase tracking-widest hover:bg-paper-black hover:text-white transition-colors duration-300 group"
                             >
                                 <span>Mobile</span>

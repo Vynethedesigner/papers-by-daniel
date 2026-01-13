@@ -6,6 +6,7 @@ import { wallpapers } from '../data/wallpapers';
 import ImageModal from './ImageModal';
 import SoundToggle from './SoundToggle';
 import soundManager from '../utils/soundManager';
+import StatsModal from './StatsModal';
 
 const Gallery = () => {
     const [activeIndex, setActiveIndex] = useState(0);
@@ -13,6 +14,8 @@ const Gallery = () => {
     const [direction, setDirection] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
     const [showOpening, setShowOpening] = useState(true); // Added for swipe hint logic
+    const [showStats, setShowStats] = useState(false);
+    const [secretCount, setSecretCount] = useState(0);
     const trackRef = useRef(null);
     const containerRef = useRef(null);
 
@@ -252,7 +255,7 @@ const Gallery = () => {
             </div>
 
             {/* Navigation Arrows (Desktop Only) */}
-            <div className="fixed bottom-8 right-8 gap-4 hidden md:flex">
+            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 gap-4 hidden md:flex">
                 <button
                     onClick={handlePrev}
                     className={`p-4 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 border border-white/20 group ${activeIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}
@@ -278,7 +281,21 @@ const Gallery = () => {
                     {hintStep === 1 ? "Turn on sound 🎧" : "Swipe to explore"}
                 </span>
 
-                <span className="font-sans text-[10px] text-gray-400">Curated by Uche Divine</span>
+                <span
+                    className="font-sans text-[10px] text-gray-400 pointer-events-auto cursor-default select-none transition-colors hover:text-gray-600"
+                    onClick={() => {
+                        setSecretCount(prev => {
+                            const newCount = prev + 1;
+                            if (newCount === 5) {
+                                setShowStats(true);
+                                return 0;
+                            }
+                            return newCount;
+                        });
+                    }}
+                >
+                    Curated by Uche Divine
+                </span>
             </div>
 
             {/* Modal */}
@@ -290,6 +307,10 @@ const Gallery = () => {
                     onNext={handleNext}
                     onPrev={handlePrev}
                 />
+            )}
+
+            {showStats && (
+                <StatsModal onClose={() => setShowStats(false)} />
             )}
         </div>
     );

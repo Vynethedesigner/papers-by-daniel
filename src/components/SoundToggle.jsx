@@ -42,7 +42,7 @@ const SoundToggle = () => {
             {/* Desktop Tooltip */}
             <div className={`absolute top-1/2 -left-3 -translate-x-full -translate-y-1/2 hidden md:block pointer-events-none transition-opacity duration-300 ${!isEnabled && showHint ? 'opacity-100' : 'opacity-0 group-hover/sound:opacity-100'}`}>
                 <span className="text-[10px] uppercase tracking-widest text-gray-400 whitespace-nowrap bg-white/80 backdrop-blur px-2 py-1 rounded-sm border border-black/5">
-                    {!isEnabled && showHint ? 'Enable audio for a better experience' : (isEnabled ? 'Mute' : 'Enable Audio')}
+                    {showHint && !isEnabled ? "Enable audio for a better experience" : (isEnabled ? "Mute" : "Enable Audio")}
                 </span>
             </div>
         </div>
