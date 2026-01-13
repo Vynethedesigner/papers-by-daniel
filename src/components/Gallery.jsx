@@ -12,21 +12,37 @@ const Gallery = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [direction, setDirection] = useState(0);
     const [isMobile, setIsMobile] = useState(false);
+    const [showOpening, setShowOpening] = useState(true); // Added for swipe hint logic
     const trackRef = useRef(null);
     const containerRef = useRef(null);
 
     // Register GSAP plugin
     gsap.registerPlugin(useGSAP);
 
-    const [showSwipeHint, setShowSwipeHint] = useState(true);
+    const [showSwipeHint, setShowSwipeHint] = useState(false); // Changed initial state to false
 
-    // Fade out swipe hint after 4 seconds
+    // Swipe Hint Logic
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowSwipeHint(false);
-        }, 4000);
-        return () => clearTimeout(timer);
-    }, []);
+        const hasSeenHint = localStorage.getItem('hasSeenSwipeHint');
+        const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        if (!hasSeenHint && isTouch && !selectedImage && !showOpening) {
+            const timer = setTimeout(() => {
+                setShowSwipeHint(true);
+            }, 1500);
+
+            // Hide hint after 10 seconds (extended from 3s)
+            const hideTimer = setTimeout(() => {
+                setShowSwipeHint(false);
+                localStorage.setItem('hasSeenSwipeHint', 'true');
+            }, 10000);
+
+            return () => {
+                clearTimeout(timer);
+                clearTimeout(hideTimer);
+            };
+        }
+    }, [selectedImage, showOpening]);
 
     // Responsive Check
     useEffect(() => {
@@ -34,6 +50,14 @@ const Gallery = () => {
         checkMobile();
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    // Simulate opening animation completion
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowOpening(false);
+        }, 2000); // Adjust time as needed for your opening animation
+        return () => clearTimeout(timer);
     }, []);
 
     const frameWidth = isMobile ? 85 : 50; // vw
@@ -224,23 +248,21 @@ const Gallery = () => {
                 </div>
             </div>
 
-            {/* Navigation Buttons */}
-            <div className="fixed bottom-12 flex gap-12 z-40">
+            {/* Navigation Arrows (Desktop Only) */}
+            <div className="fixed bottom-8 right-8 gap-4 hidden md:flex">
                 <button
                     onClick={handlePrev}
-                    disabled={isFirst}
-                    className={`p-4 transition-all duration-300 group ${isFirst ? 'opacity-20 cursor-not-allowed' : 'hover:opacity-50'}`}
-                    aria-label="Previous paper"
+                    className={`p-4 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 border border-white/20 group ${activeIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}
+                    disabled={activeIndex === 0}
                 >
-                    <ChevronLeft size={24} strokeWidth={1} className="text-paper-black" />
+                    <ChevronLeft className="w-6 h-6 text-paper-black" />
                 </button>
                 <button
                     onClick={handleNext}
-                    disabled={isLast}
-                    className={`p-4 transition-all duration-300 group ${isLast ? 'opacity-20 cursor-not-allowed' : 'hover:opacity-50'}`}
-                    aria-label="Next paper"
+                    className={`p-4 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-300 border border-white/20 group ${activeIndex === wallpapers.length - 1 ? 'opacity-30 cursor-not-allowed' : 'opacity-100'}`}
+                    disabled={activeIndex === wallpapers.length - 1}
                 >
-                    <ChevronRight size={24} strokeWidth={1} className="text-paper-black" />
+                    <ChevronRight className="w-6 h-6 text-paper-black" />
                 </button>
             </div>
 

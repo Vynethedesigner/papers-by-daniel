@@ -140,7 +140,7 @@ export const wallpapers = [
         title: "Almost",
         description: "A single gesture interrupts the stillness of the subject. The outcome is left unresolved.",
         credit: "Daniel Lawani",
-        src: "/images/Almost_Mobile.png",
+        src: "/images/Almost.jpg",
         downloads: {
             mobile: "/images/Almost_Mobile.png",
             desktop: "/images/Almost.jpg"
